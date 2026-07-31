@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Velotta House</title>
+<meta name="theme-color" content="#1D4ED8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Velotta House">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-page: #f2ede0;
+    --bg-card: #ffffff;
+    --bg-sunken: #f7f4ea;
+    --text-primary: #17190f; --text-secondary: #6d6a54; --text-muted: #a6a288;
+    --border: #ece5cf;
+    --accent: #2f6fed; --accent-dark: #1d4ed8; --accent-tint: #e2ebfe; --accent-tint-2: #c1d3fc;
+    --pop: #ff6b4a; --pop-dark: #e14e2c; --pop-tint: #ffe3da;
+    --coral: #ef5b7a; --coral-tint: #fde3ea;
+    --amber: #f2a516; --amber-tint: #fdedcc;
+    --purple: #8b5cf6; --purple-tint: #ece3fd;
+    --teal: #0d9488; --teal-tint: #d7f2ef;
+    --warn-bg: #fdedcc; --warn-text: #92600a;
+    --ok-bg: #dcf6e7; --ok-text: #0e8f58;
+    --shadow-card: 0 1px 0 rgba(10,15,30,0.03), 0 26px 55px -24px rgba(10,15,30,0.35);
+    --shadow-row: 0 1px 2px rgba(10,15,30,0.04), 0 6px 14px -8px rgba(10,15,30,0.12);
+    --shadow-pop: 0 10px 22px -8px rgba(255,107,74,0.55);
+    --shadow-accent: 0 10px 22px -8px rgba(47,111,237,0.5);
+    --radius-lg: 30px; --radius-md: 18px; --radius-sm: 14px; --radius-pill: 100px;
+    --nav-h: 68px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; color: var(--text-primary); background: var(--bg-page);
+    min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;
+    padding: 28px 14px; -webkit-font-smoothing: antialiased;
+  }
+  h1, .title-font { font-family: 'Poppins', 'Inter', sans-serif; }
+  .app {
+    width: 100%; max-width: 430px; background: var(--bg-card);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+    overflow: hidden; display: flex; flex-direction: column; min-height: 690px;
+    position: relative;
+  }
+  header {
+    position: relative; overflow: hidden; padding: 26px 22px 34px;
+    background: linear-gradient(135deg, var(--accent) 0%, #4c8dff 55%, var(--accent-dark) 100%);
+    color: #fff;
+  }
+  header::before {
+    content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%;
+    background: rgba(255,255,255,0.12); top: -90px; right: -50px;
+  }
+  header::after {
+    content: ''; position: absolute; width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(255,255,255,0.09); bottom: -70px; left: -30px;
+  }
+  header .inner { position: relative; display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 46px; height: 46px; border-radius: 14px; background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .mark svg { width: 23px; height: 23px; stroke: #fff; }
+  header h1 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
+  header p { font-size: 13px; color: rgba(255,255,255,0.88); margin: 3px 0 0; font-weight: 500; }
+  .tag {
+    position: relative; display: inline-flex; margin-top: 14px; background: rgba(255,255,255,0.22);
+    color: #fff; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: var(--radius-pill);
+    letter-spacing: 0.3px;
+  }
+  #banner { background: var(--warn-bg); color: var(--warn-text); font-size: 13px; padding: 10px 22px; display: none; font-weight: 700; }
+  .screen {
+    padding: 22px 18px calc(var(--nav-h) + 40px);
+    background: var(--bg-card);
+    border-radius: 22px 22px 0 0;
+    margin-top: -18px;
+    position: relative;
+    display: none; flex: 1;
+  }
+  .screen.active { display: block; animation: fadeIn .3s cubic-bezier(.2,.8,.3,1); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .stat {
+    flex: 1; border-radius: var(--radius-md); padding: 14px 16px; background: var(--bg-card);
+    box-shadow: var(--shadow-row); border: 1px solid var(--border);
+  }
+  .stat.pop-tint { background: linear-gradient(160deg, #fff, var(--pop-tint)); }
+  .stat.accent-tint { background: linear-gradient(160deg, #fff, var(--accent-tint)); }
+  .stat .label { font-size: 10.5px; color: var(--text-secondary); margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat .value { font-size: 26px; font-weight: 800; margin: 4px 0 0; color: var(--text-primary); font-family: 'Poppins', sans-serif; }
+  .progress-track { height: 10px; border-radius: var(--radius-pill); background: var(--border); overflow: hidden; margin: 4px 0 20px; }
+  .progress-fill { height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--accent), #7ea6ff); transition: width .5s cubic-bezier(.2,.8,.3,1); width: 0%; }
+  .group-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin: 20px 4px 10px; }
+  .group-label:first-of-type { margin-top: 4px; }
+  .row {
+    display: flex; align-items: center; gap: 12px; padding: 13px 14px;
+    background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-row);
+    border-radius: var(--radius-sm); margin-bottom: 9px;
+    transition: transform .15s cubic-bezier(.3,1.4,.5,1), box-shadow .15s ease, opacity .2s ease;
+  }
+  .row:active { transform: scale(0.98); }
+  .row .name { font-size: 14.5px; font-weight: 600; }
+  .row .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .row .buy { font-weight: 700; padding: 3px 10px; border-radius: var(--radius-pill); font-size: 11px; display: inline-block; margin-top: 6px; }
+  .row .buy.need { background: var(--warn-bg); color: var(--warn-text); }
+  .row .buy.ok { background: var(--ok-bg); color: var(--ok-text); }
+  .meal-row {
+    background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-row);
+    border-radius: var(--radius-sm); margin-bottom: 9px; padding: 13px 14px;
+  }
+  .meal-row-main { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .meal-row-main:active { opacity: 0.85; }
+  .chev { font-size: 9px; color: var(--text-muted); display: inline-block; margin-left: 2px; transition: transform .2s ease; }
+  .meal-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .meal-detail.open { display: block; animation: fadeIn .2s ease; }
+  .meal-detail .detail-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin: 0 0 4px; }
+  .meal-detail .detail-label:not(:first-child) { margin-top: 10px; }
+  .meal-detail .detail-value { font-size: 13px; color: var(--text-primary); margin: 0; }
+  .meal-detail ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-secondary); }
+  .meal-detail li { margin-bottom: 3px; }
+  .meal-detail .no-detail { font-size: 12.5px; color: var(--text-muted); font-style: italic; margin: 0; }
+  .badge {
+    width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; font-family: 'Poppins', sans-serif;
+  }
+  .badge.b-chicken { background: var(--amber-tint); color: var(--amber); }
+  .badge.b-beef { background: var(--coral-tint); color: var(--coral); }
+  .badge.b-steak { background: var(--purple-tint); color: var(--purple); }
+  .badge.b-turkey { background: var(--teal-tint); color: var(--teal); }
+  input[type=checkbox] {
+    appearance: none; -webkit-appearance: none; width: 26px; height: 26px; flex-shrink: 0;
+    border-radius: 50%; border: 2.5px solid #e2dcc6; cursor: pointer;
+    transition: all .18s cubic-bezier(.3,1.6,.5,1); background-position: center; background-repeat: no-repeat;
+  }
+  input[type=checkbox]:checked {
+    background-color: var(--accent); border-color: var(--accent); transform: scale(1.12);
+    box-shadow: var(--shadow-accent); background-size: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  }
+  .cookbtn {
+    width: 34px; height: 34px; border-radius: 50%; border: 2.5px solid var(--border);
+    background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    color: var(--accent); font-weight: 700; transition: all .15s cubic-bezier(.3,1.6,.5,1);
+  }
+  .cookbtn:active { transform: scale(0.86); }
+  .cookbtn.done { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: var(--shadow-accent); }
+  .cooked-name { text-decoration: line-through; color: var(--text-muted); }
+  .stepbtn {
+    width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--border);
+    background: #fff; font-size: 17px; line-height: 1; cursor: pointer; color: var(--text-primary);
+    transition: all .15s cubic-bezier(.3,1.6,.5,1); font-weight: 700;
+  }
+  .stepbtn:active { transform: scale(0.82); }
+  .qtyval { min-width: 28px; text-align: center; font-size: 15px; font-weight: 800; font-family: 'Poppins', sans-serif; }
+  input[type=text], input[type=number], select {
+    height: 42px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+    padding: 0 12px; font-size: 14px; font-family: inherit; background: var(--bg-sunken); color: var(--text-primary);
+    transition: border-color .15s ease;
+  }
+  input[type=text]:focus, input[type=number]:focus, select:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .addrow { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .addrow input[type=text].name { width: 100%; }
+  .addrow-row2 { display: flex; gap: 6px; }
+  .addrow-row2 > * { min-width: 0; }
+  .ingredient-row { margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
+  .ingredient-row .ing-item { width: 100%; margin-bottom: 6px; }
+  .ing-row2 { display: flex; gap: 6px; }
+  .ing-row2 > * { flex: 1; min-width: 0; }
+  button.add {
+    width: 42px; height: 42px; border-radius: var(--radius-sm); border: none;
+    background: linear-gradient(135deg, var(--pop), var(--pop-dark)); color: #fff; font-size: 20px; cursor: pointer;
+    transition: transform .15s cubic-bezier(.3,1.6,.5,1); box-shadow: var(--shadow-pop); font-weight: 700;
+  }
+  button.add:active { transform: scale(0.9) rotate(-4deg); }
+  .empty { text-align: center; padding: 34px 12px; color: var(--text-muted); }
+  .empty svg { width: 36px; height: 36px; stroke: var(--accent); margin-bottom: 10px; }
+  .empty p { font-size: 13px; margin: 0; font-weight: 600; }
+  .skeleton { background: var(--bg-sunken); border-radius: var(--radius-sm); height: 56px; margin-bottom: 9px; position: relative; overflow: hidden; }
+  .skeleton::after {
+    content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: shimmer 1.2s infinite;
+  }
+  @keyframes shimmer { to { transform: translateX(100%); } }
+  nav {
+    position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 20;
+    display: flex; background: rgba(255,255,255,0.85); backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.7); border-radius: var(--radius-pill);
+    box-shadow: 0 18px 36px -14px rgba(20,15,5,0.32);
+    padding: 7px; height: var(--nav-h);
+  }
+  nav button {
+    flex: 1; border: none; background: none; padding: 9px 0; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 10.5px; font-weight: 700; color: var(--text-muted); transition: all .18s cubic-bezier(.3,1.6,.5,1);
+    border-radius: var(--radius-pill);
+  }
+  nav button svg { width: 20px; height: 20px; stroke: var(--text-muted); transition: stroke .15s ease; }
+  nav button.active { color: #fff; background: var(--accent); box-shadow: var(--shadow-accent); }
+  nav button.active svg { stroke: #fff; }
+  nav button:active { transform: scale(0.93); }
+  .week-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin: 18px 4px 8px; }
+  .week-label:first-child { margin-top: 4px; }
+
+  /* ---- Real mobile viewport: go full-bleed, pin the nav to the actual screen ---- */
+  @media (max-width: 480px) {
+    body { padding: 0; align-items: stretch; }
+    .app {
+      max-width: 100%; min-height: 100dvh; border-radius: 0; box-shadow: none;
+    }
+    .screen { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px) + 28px); }
+    nav {
+      position: fixed; left: 10px; right: 10px;
+      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="inner">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v20M6 2c0 4 3 4 3 8s-3 4-3 8M18 2v20M18 2c-3 3-3 6 0 9"/></svg></div>
+      <div style="flex:1;">
+        <h1 id="hh-title">Velotta House</h1>
+        <p id="hh-sub">Loading&hellip;</p>
+      </div>
+      <button id="import-toggle-btn" aria-label="Import new month" style="width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      </button>
+    </div>
+    <span class="tag" id="hh-tag">&nbsp;</span>
+  </header>
+  <div id="import-panel" style="display:none; padding:14px 20px 4px;">
+    <p style="font-size:12.5px; color:var(--text-secondary); margin:0 0 8px; font-weight:600;">Paste this month's plan below, then tap Import. This only updates the calendar and shopping list &mdash; pantry stays untouched.</p>
+    <textarea id="import-text" placeholder="Paste the JSON plan here" style="width:100%; height:110px; border:2px solid var(--border); border-radius:var(--radius-sm); padding:10px; font-family:'SF Mono',Menlo,monospace; font-size:11.5px; background:var(--bg-sunken); color:var(--text-primary); resize:vertical;"></textarea>
+    <div style="display:flex; gap:8px; margin-top:8px; align-items:center; flex-wrap:wrap;">
+      <button id="import-btn" style="height:38px; padding:0 16px; border-radius:var(--radius-sm); border:none; background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; font-weight:700; font-size:13px; cursor:pointer;">Import month</button>
+      <span id="import-status" style="font-size:12.5px; font-weight:600; flex-basis:100%;"></span>
+    </div>
+  </div>
+  <div id="banner"></div>
+  <div id="screen-month" class="screen">
+    <div id="month-content">
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+  </div>
+  <div id="screen-shop" class="screen active">
+    <div class="stat-row">
+      <div class="stat pop-tint"><p class="label">Left to buy</p><p class="value" id="tobuy-count">&ndash;</p></div>
+      <div class="stat accent-tint"><p class="label">Bought &rarr; pantry</p><p class="value" id="checked-count">0</p></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="shop-progress"></div></div>
+    <p class="group-label">Costco</p>
+    <div id="shop-costco"><div class="skeleton"></div></div>
+    <p class="group-label">Aldi / Target</p>
+    <div id="shop-aldi"><div class="skeleton"></div></div>
+    <div class="addrow">
+      <input type="text" class="name" id="shop-add-name" placeholder="Add item">
+      <div class="addrow-row2">
+        <input type="number" id="shop-add-qty" placeholder="Qty" style="flex:0 0 64px;">
+        <select id="shop-add-store" style="flex:1;">
+          <option value="Costco">Costco</option>
+          <option value="Aldi">Aldi / Target</option>
+        </select>
+        <button class="add" id="shop-add-btn" aria-label="Add item" style="flex:0 0 42px;">+</button>
+      </div>
+    </div>
+  </div>
+  <div id="screen-pantry" class="screen">
+    <input type="text" id="pantry-search" placeholder="Search pantry" style="width:100%; margin:0 0 14px;">
+    <div id="pantry-rows"><div class="skeleton"></div></div>
+    <div class="addrow">
+      <input type="text" class="name" id="pantry-add-name" placeholder="Add item">
+      <div class="addrow-row2">
+        <input type="number" id="pantry-add-qty" placeholder="Qty" style="flex:1;">
+        <input type="text" id="pantry-add-unit" placeholder="Unit" style="flex:1;">
+        <button class="add" id="pantry-add-btn" aria-label="Add item" style="flex:0 0 42px;">+</button>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <button class="tabbtn" data-tab="month" aria-label="This month">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>This month</span>
+    </button>
+    <button class="tabbtn active" data-tab="shop" aria-label="Shopping list">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.5 3h2l2.8 12.5a2 2 0 0 0 2 1.5h8.6a2 2 0 0 0 2-1.6L21.5 8H6"/></svg>
+      <span>Shopping list</span>
+    </button>
+    <button class="tabbtn" data-tab="pantry" aria-label="Pantry">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg>
+      <span>Pantry</span>
+    </button>
+  </nav>
+</div>
+<script>
+// ------------------------------------------------------------------
+// Paste your deployed Apps Script web app URL here after you deploy Code.gs
+// (Deploy > New deployment > Web app > copy the URL it gives you).
+// ------------------------------------------------------------------
+const API_URL = "https://script.google.com/macros/s/AKfycbz97DcbYNTy0b-ZHaDs4y6eoulm15IB-uHFe7kG2Bux5og_xAme-dE9qR68l-Dg13-1/exec";
+let boughtTotal = 0;
+let state = { config: [], mealPlan: [], shoppingList: [], pantry: [], recipes: [] };
+function cfgVal(key) {
+  const row = state.config.find(c => c.key === key);
+  return row ? row.value : '';
+}
+function proteinBadge(recipeName) {
+  const recipe = state.recipes.find(r => r.name === recipeName);
+  const group = recipe ? recipe.protein_group : '';
+  const map = {
+    chicken: ['b-chicken', 'C'],
+    beef: ['b-beef', 'B'],
+    steak: ['b-steak', 'S'],
+    'turkey sausage': ['b-turkey', 'T'],
+  };
+  const [cls, letter] = map[group] || ['b-turkey', '?'];
+  return '<div class="badge ' + cls + '">' + letter + '</div>';
+}
+function emptyState(message) {
+  return '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><p>' + message + '</p></div>';
+}
+let bannerTimer = null;
+function flashBanner(msg) {
+  const b = document.getElementById('banner');
+  b.style.display = 'block';
+  b.textContent = msg;
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => { b.style.display = 'none'; }, 3500);
+}
+function capitalize(s) {
+  return s && s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+}
+function buildMealDetail(recipeName) {
+  const recipe = state.recipes.find(r => r.name === recipeName);
+  if (!recipe) {
+    return '<p class="no-detail">No details saved for this meal yet &mdash; tap the pencil to add ingredients.</p>';
+  }
+  let html = '';
+  if (recipe.protein_group) {
+    html += '<p class="detail-label">Protein</p><p class="detail-value">' + capitalize(recipe.protein_group) + '</p>';
+  }
+  if (recipe.prep_time) {
+    html += '<p class="detail-label">Prep time</p><p class="detail-value">' + recipe.prep_time + '</p>';
+  }
+  let ingredients = [];
+  try { ingredients = JSON.parse(recipe.ingredients_json || '[]'); } catch (e) { ingredients = []; }
+  html += '<p class="detail-label">Ingredients</p>';
+  if (!ingredients.length) {
+    html += '<p class="no-detail">No ingredient list saved for this meal.</p>';
+  } else {
+    html += '<ul>' + ingredients.map(i =>
+      '<li>' + (i.item || '') + (i.qty ? ' &mdash; ' + i.qty + ' ' + (i.unit || '') : '') + '</li>'
+    ).join('') + '</ul>';
+  }
+  return html;
+}
+const CACHE_KEY = 'velottaHouseState_v1';
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function saveCache(s) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(s)); } catch (e) {}
+}
+async function apiGet() {
+  const res = await fetch(API_URL);
+  return res.json();
+}
+async function apiPost(action, payload) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
+    body: JSON.stringify(Object.assign({ action }, payload)),
+  });
+  return res.json();
+}
+function renderAll() {
+  saveCache(state);
+  document.getElementById('hh-title').textContent = 'Velotta House';
+  document.getElementById('hh-sub').textContent = cfgVal('household') || '';
+  document.getElementById('hh-tag').textContent = cfgVal('current_month') || '';
+  renderMonth();
+  renderShop();
+  renderPantry();
+}
+// ---------- This month ----------
+function renderMonth() {
+  const el = document.getElementById('month-content');
+  el.innerHTML = '';
+  const weeks = {};
+  state.mealPlan.forEach(r => {
+    if (!weeks[r.week]) weeks[r.week] = [];
+    weeks[r.week].push(r);
+  });
+  const weekKeys = Object.keys(weeks).sort();
+  if (weekKeys.length === 0) { el.innerHTML = emptyState('No plan loaded yet'); return; }
+  weekKeys.forEach(wk => {
+    const label = document.createElement('p');
+    label.className = 'week-label';
+    label.textContent = 'Week ' + wk;
+    el.appendChild(label);
+    weeks[wk].forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'meal-row';
+      el.appendChild(row);
+      renderDayView(row, item);
+    });
+  });
+}
+function renderDayView(row, item) {
+  const cooked = item.cooked === true || item.cooked === 'TRUE';
+  row.innerHTML =
+    '<div class="meal-row-main">' +
+      proteinBadge(item.recipe_name) +
+      '<div style="flex:1;">' +
+        '<div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">' + item.day + '</div>' +
+        '<div class="name ' + (cooked ? 'cooked-name' : '') + '">' + item.recipe_name + ' <span class="chev">&#9662;</span></div>' +
+      '</div>' +
+      '<button class="stepbtn edit-day-btn" aria-label="Change this meal" style="border-radius:8px;">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>' +
+      '</button>' +
+      '<button class="cookbtn ' + (cooked ? 'done' : '') + '" aria-label="Mark cooked">' + (cooked ? '&#10003;' : '') + '</button>' +
+    '</div>' +
+    '<div class="meal-detail">' + buildMealDetail(item.recipe_name) + '</div>';
+
+  const main = row.querySelector('.meal-row-main');
+  const detail = row.querySelector('.meal-detail');
+  const chev = row.querySelector('.chev');
+  main.addEventListener('click', (e) => {
+    if (e.target.closest('.edit-day-btn') || e.target.closest('.cookbtn')) return;
+    const open = detail.classList.toggle('open');
+    chev.style.transform = open ? 'rotate(180deg)' : '';
+  });
+  const cookBtn = row.querySelector('.cookbtn');
+  cookBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (cooked || cookBtn.disabled) return;
+    cookBtn.disabled = true;
+    try {
+      state = await apiPost('markCooked', { recipeName: item.recipe_name, week: item.week, day: item.day });
+      renderAll();
+    } catch (err) {
+      cookBtn.disabled = false;
+      flashBanner("Couldn't save — check your connection and try again.");
+    }
+  });
+  row.querySelector('.edit-day-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    renderDayEdit(row, item);
+  });
+}
+function renderDayEdit(row, item) {
+  const recipeNames = [...new Set(state.recipes.map(r => r.name))];
+  const options = recipeNames.map(n =>
+    '<option value="' + n.replace(/"/g, '&quot;') + '"' + (n === item.recipe_name ? ' selected' : '') + '>' + n + '</option>'
+  ).join('');
+  row.style.display = 'block';
+  row.innerHTML =
+    '<div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:6px;">' + item.day + '</div>' +
+    '<select class="day-select" style="width:100%;">' + options + '<option value="__new__">+ Add a new meal</option></select>' +
+    '<div class="new-meal-fields" style="display:none; margin-top:10px;">' +
+      '<input type="text" class="new-meal-name" placeholder="Meal name" style="width:100%; margin-bottom:8px;">' +
+      '<div style="display:flex; gap:6px; margin-bottom:8px;">' +
+        '<select class="new-meal-protein" style="flex:1;"><option value="chicken">Chicken</option><option value="beef">Beef</option><option value="steak">Steak</option><option value="turkey sausage">Turkey sausage</option><option value="other">Other</option></select>' +
+        '<input type="text" class="new-meal-prep" placeholder="Prep time" style="flex:1;">' +
+      '</div>' +
+      '<p style="font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin:10px 0 6px;">Ingredients &mdash; checked against pantry automatically</p>' +
+      '<div class="ingredient-rows"></div>' +
+      '<button type="button" class="add-ingredient-btn" style="height:32px; padding:0 10px; border-radius:var(--radius-sm); border:2px solid var(--border); background:#fff; font-size:12px; font-weight:700; cursor:pointer; margin-top:2px;">+ Add ingredient</button>' +
+    '</div>' +
+    '<div style="display:flex; gap:8px; margin-top:12px;">' +
+      '<button type="button" class="save-day-btn" style="flex:1; height:38px; border-radius:var(--radius-sm); border:none; background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; font-weight:700; font-size:13px; cursor:pointer;">Save</button>' +
+      '<button type="button" class="cancel-day-btn" style="height:38px; padding:0 14px; border-radius:var(--radius-sm); border:2px solid var(--border); background:#fff; color:var(--text-secondary); font-weight:700; font-size:13px; cursor:pointer;">Cancel</button>' +
+    '</div>';
+  const select = row.querySelector('.day-select');
+  const newFields = row.querySelector('.new-meal-fields');
+  const ingredientRows = row.querySelector('.ingredient-rows');
+  function addIngredientRow() {
+    const r = document.createElement('div');
+    r.className = 'ingredient-row';
+    r.innerHTML =
+      '<input type="text" class="ing-item" placeholder="Ingredient name">' +
+      '<div class="ing-row2">' +
+        '<input type="number" class="ing-qty" placeholder="Qty">' +
+        '<input type="text" class="ing-unit" placeholder="Unit">' +
+        '<select class="ing-store"><option value="Costco">Costco</option><option value="Aldi">Aldi</option></select>' +
+      '</div>';
+    ingredientRows.appendChild(r);
+    r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  addIngredientRow();
+  row.querySelector('.add-ingredient-btn').addEventListener('click', addIngredientRow);
+  select.addEventListener('change', () => {
+    newFields.style.display = select.value === '__new__' ? 'block' : 'none';
+    if (select.value === '__new__') {
+      newFields.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+  row.querySelector('.cancel-day-btn').addEventListener('click', () => renderDayView(row, item));
+  const saveBtn = row.querySelector('.save-day-btn');
+  saveBtn.addEventListener('click', async () => {
+    if (saveBtn.disabled) return;
+    if (document.activeElement) document.activeElement.blur();
+    const isNew = select.value === '__new__';
+    if (!isNew) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      try {
+        state = await apiPost('setMealForDay', { week: item.week, day: item.day, recipeName: select.value, isNew: false });
+        renderAll();
+      } catch (err) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save';
+        flashBanner("Couldn't save — check your connection and try again.");
+      }
+      return;
+    }
+    const nameInput = row.querySelector('.new-meal-name');
+    const name = nameInput.value.trim();
+    if (!name) {
+      nameInput.style.borderColor = 'var(--pop-dark)';
+      nameInput.focus();
+      return;
+    }
+    const protein = row.querySelector('.new-meal-protein').value;
+    const prep = row.querySelector('.new-meal-prep').value.trim();
+    const ingredients = Array.from(row.querySelectorAll('.ingredient-row')).map(r => ({
+      item: r.querySelector('.ing-item').value.trim(),
+      qty: parseFloat(r.querySelector('.ing-qty').value) || 0,
+      unit: r.querySelector('.ing-unit').value.trim() || 'ct',
+      store: r.querySelector('.ing-store').value,
+    })).filter(i => i.item);
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    try {
+      state = await apiPost('setMealForDay', {
+        week: item.week, day: item.day, recipeName: name, isNew: true,
+        ingredients, proteinGroup: protein, prepTime: prep,
+      });
+      renderAll();
+    } catch (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save';
+      flashBanner("Couldn't save — check your connection and try again.");
+    }
+  });
+  row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+// ---------- Shopping list ----------
+function renderShop() {
+  const costcoEl = document.getElementById('shop-costco');
+  const aldiEl = document.getElementById('shop-aldi');
+  costcoEl.innerHTML = '';
+  aldiEl.innerHTML = '';
+  let toBuy = 0;
+  const costcoItems = state.shoppingList.filter(i => i.store === 'Costco');
+  const aldiItems = state.shoppingList.filter(i => i.store !== 'Costco');
+  if (costcoItems.length === 0) costcoEl.innerHTML = emptyState('Nothing needed here');
+  if (aldiItems.length === 0) aldiEl.innerHTML = emptyState('Nothing needed here');
+  state.shoppingList.forEach(item => {
+    const target = item.store === 'Costco' ? costcoEl : aldiEl;
+    const row = document.createElement('div');
+    row.className = 'row';
+    const hasNeed = item.need !== '' && item.need !== undefined && item.need !== null;
+    const sub = hasNeed
+      ? ('need ' + item.need + ' ' + item.unit + ' &middot; have ' + item.have + ' ' + item.unit)
+      : 'added manually';
+    const buyClass = Number(item.buy) > 0 ? 'need' : 'ok';
+    const buyText = Number(item.buy) > 0 ? ('buy ' + item.buy + ' ' + item.unit) : 'have enough';
+    row.innerHTML =
+      '<input type="checkbox">' +
+      '<div style="flex:1;">' +
+        '<div class="name">' + item.item + '</div>' +
+        '<div class="sub">' + sub + '</div>' +
+        '<span class="buy ' + buyClass + '">' + buyText + '</span>' +
+      '</div>';
+    target.appendChild(row);
+    toBuy += 1;
+    row.querySelector('input').addEventListener('change', async function () {
+      if (!this.checked || this.disabled) return;
+      this.disabled = true;
+      row.style.opacity = '0.3';
+      boughtTotal += 1;
+      try {
+        state = await apiPost('checkShoppingItem', { item: item.item, store: item.store });
+        renderAll();
+      } catch (err) {
+        this.disabled = false;
+        this.checked = false;
+        row.style.opacity = '';
+        boughtTotal -= 1;
+        flashBanner("Couldn't save — check your connection and try again.");
+      }
+    });
+  });
+  document.getElementById('tobuy-count').textContent = toBuy;
+  document.getElementById('checked-count').textContent = boughtTotal;
+  const total = toBuy + boughtTotal;
+  const pct = total > 0 ? Math.round((boughtTotal / total) * 100) : 0;
+  document.getElementById('shop-progress').style.width = pct + '%';
+}
+document.getElementById('shop-add-btn').addEventListener('click', async function () {
+  if (this.disabled) return;
+  const nameInput = document.getElementById('shop-add-name');
+  const qtyInput = document.getElementById('shop-add-qty');
+  const store = document.getElementById('shop-add-store').value;
+  if (!nameInput.value.trim()) { nameInput.focus(); return; }
+  this.disabled = true;
+  try {
+    state = await apiPost('addShoppingItem', {
+      name: nameInput.value.trim(), qty: parseFloat(qtyInput.value) || 1, unit: 'ct', store: store,
+    });
+    nameInput.value = ''; qtyInput.value = '';
+    renderAll();
+  } catch (err) {
+    flashBanner("Couldn't add that item — check your connection and try again.");
+  } finally {
+    this.disabled = false;
+  }
+});
+// ---------- Pantry ----------
+function renderPantry() {
+  const el = document.getElementById('pantry-rows');
+  el.innerHTML = '';
+  if (state.pantry.length === 0) { el.innerHTML = emptyState('Pantry is empty'); return; }
+  state.pantry.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'row pantry-row';
+    row.dataset.name = String(item.item).toLowerCase();
+    row.innerHTML =
+      '<div style="flex:1;" class="name">' + item.item + ' <span style="color:var(--text-muted); font-size:12px; font-weight:400;">(' + item.unit + ')</span></div>' +
+      '<button class="stepbtn" data-d="-1">&minus;</button>' +
+      '<span class="qtyval">' + item.qty + '</span>' +
+      '<button class="stepbtn" data-d="1">+</button>';
+    el.appendChild(row);
+    row.querySelectorAll('.stepbtn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (btn.disabled) return;
+        btn.disabled = true;
+        try {
+          state = await apiPost('adjustPantryQty', { name: item.item, delta: parseInt(btn.dataset.d) });
+          renderAll();
+        } catch (err) {
+          btn.disabled = false;
+          flashBanner("Couldn't save — check your connection and try again.");
+        }
+      });
+    });
+  });
+}
+document.getElementById('pantry-add-btn').addEventListener('click', async function () {
+  if (this.disabled) return;
+  const name = document.getElementById('pantry-add-name');
+  const qty = document.getElementById('pantry-add-qty');
+  const unit = document.getElementById('pantry-add-unit');
+  if (!name.value.trim()) { name.focus(); return; }
+  this.disabled = true;
+  try {
+    state = await apiPost('addPantryItem', {
+      name: name.value.trim(), qty: parseFloat(qty.value) || 0, unit: unit.value.trim() || 'ct',
+    });
+    name.value = ''; qty.value = ''; unit.value = '';
+    renderAll();
+  } catch (err) {
+    flashBanner("Couldn't add that item — check your connection and try again.");
+  } finally {
+    this.disabled = false;
+  }
+});
+document.getElementById('pantry-search').addEventListener('input', function () {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.pantry-row').forEach(row => {
+    row.style.display = row.dataset.name.includes(q) ? 'flex' : 'none';
+  });
+});
+// ---------- Tabs ----------
+document.querySelectorAll('.tabbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tabbtn').forEach(b => b.classList.remove('active'));
+    document.getElementById('screen-' + btn.dataset.tab).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo(0, 0);
+  });
+});
+// ---------- Import a new month ----------
+document.getElementById('import-toggle-btn').addEventListener('click', () => {
+  const panel = document.getElementById('import-panel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('import-btn').addEventListener('click', async function () {
+  if (this.disabled) return;
+  const statusEl = document.getElementById('import-status');
+  const textEl = document.getElementById('import-text');
+  let parsed;
+  try {
+    parsed = JSON.parse(textEl.value);
+  } catch (err) {
+    statusEl.style.color = 'var(--pop-dark)';
+    statusEl.textContent = "That doesn't look like valid JSON — paste the whole block.";
+    return;
+  }
+  this.disabled = true;
+  statusEl.style.color = 'var(--text-secondary)';
+  statusEl.textContent = 'Importing…';
+  try {
+    const result = await apiPost('importMonth', { data: parsed });
+    if (result && result.error) {
+      statusEl.style.color = 'var(--pop-dark)';
+      statusEl.textContent = result.error;
+      return;
+    }
+    state = result;
+    renderAll();
+    boughtTotal = 0;
+    statusEl.style.color = 'var(--accent-dark)';
+    statusEl.textContent = 'Imported — calendar and shopping list updated.';
+    textEl.value = '';
+    setTimeout(() => { document.getElementById('import-panel').style.display = 'none'; statusEl.textContent = ''; }, 1800);
+  } catch (err) {
+    statusEl.style.color = 'var(--pop-dark)';
+    statusEl.textContent = "Couldn't reach the backend — check your connection and try again.";
+  } finally {
+    this.disabled = false;
+  }
+});
+// ---------- Optional: installable app shell (safe to ignore) ----------
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+// ---------- Boot ----------
+async function boot() {
+  const banner = document.getElementById('banner');
+  if (API_URL.indexOf('PASTE_YOUR') === 0) {
+    banner.style.display = 'block';
+    banner.textContent = 'Set API_URL at the top of this file to your deployed Apps Script web app URL, then reload.';
+    return;
+  }
+  // Show last-known data instantly (if we have it) while a fresh copy loads
+  // in the background — Apps Script cold starts can take a while, this just
+  // means you're not staring at a blank skeleton every single time.
+  const cached = loadCache();
+  if (cached) {
+    state = cached;
+    renderAll();
+    banner.style.display = 'block';
+    banner.style.background = 'var(--accent-tint)';
+    banner.style.color = 'var(--accent-dark)';
+    banner.textContent = 'Showing your last saved data while it reconnects…';
+  }
+  try {
+    state = await apiGet();
+    renderAll();
+    banner.style.display = 'none';
+    banner.style.background = '';
+    banner.style.color = '';
+  } catch (err) {
+    banner.style.background = '';
+    banner.style.color = '';
+    if (cached) {
+      banner.style.display = 'block';
+      banner.textContent = "Couldn't refresh just now — still showing your last saved data.";
+    } else {
+      banner.style.display = 'block';
+      banner.textContent = "Couldn't reach the backend. Check API_URL and that the web app is deployed with access set to Anyone.";
+    }
+  }
+}
+boot();
+</script>
+</body>
+</html>
